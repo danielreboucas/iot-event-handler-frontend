@@ -1,69 +1,169 @@
-# React + TypeScript + Vite
+# IoT Event Handler Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma aplicação frontend React para gerenciamento de dispositivos IoT e monitoramento de eventos em tempo real.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📱 Página de Gerenciamento de Dispositivos
+- **CRUD completo de dispositivos**: Criar, listar, editar e deletar dispositivos
+- **Campos obrigatórios**: Nome e localização do dispositivo
+- **Identificação única**: Cada dispositivo possui UUID e integrationId
+- **Interface intuitiva**: Design moderno com Tailwind CSS
+- **Confirmação de exclusão**: Dialog customizado para confirmar deleção de dispositivos
+- **Validação de formulários**: Campos obrigatórios com feedback visual
 
-## Expanding the ESLint configuration
+### 📊 Dashboard de Eventos
+- **Visualização em tempo real**: Eventos dos dispositivos IoT com atualização automática (30s)
+- **Destaque visual de alarmes**: Eventos críticos destacados em vermelho
+- **Filtros inteligentes**: 
+  - Todos os eventos
+  - Apenas alarmes ativos
+- **Dados detalhados**: Temperatura, umidade, timestamp e dispositivo associado
+- **Notificações de alarmes**: Banner de alerta quando há alarmes ativos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🎨 Componentes Personalizados
+- **ConfirmationDialog**: Modal customizado para confirmações
+- **DeviceForm**: Formulário reutilizável para criar/editar dispositivos
+- **DeviceList**: Lista responsiva de dispositivos com ações inline
+- **EventDashboard**: Dashboard completo de eventos
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠 Tecnologias Utilizadas
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **React 19** com TypeScript para tipagem estática
+- **Vite** como bundler e dev server
+- **Tailwind CSS** para estilização moderna
+- **Axios** para requisições HTTP
+- **React Hooks** para gerenciamento de estado
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── components/              # Componentes React
+│   ├── DeviceManagement.tsx    # Página principal de gerenciamento
+│   ├── DeviceList.tsx           # Lista de dispositivos
+│   ├── DeviceForm.tsx           # Formulário de dispositivo
+│   ├── EventDashboard.tsx       # Dashboard de eventos
+│   └── ConfirmationDialog.tsx   # Modal de confirmação
+├── services/               # Serviços para API
+│   ├── deviceService.ts        # CRUD de dispositivos
+│   └── eventService.ts         # Serviços de eventos
+├── types/                  # Definições TypeScript
+│   ├── Device.ts              # Tipos de dispositivo
+│   └── Event.ts               # Tipos de evento
+├── api/                    # Configuração da API
+│   └── index.ts               # Cliente Axios configurado
+└── App.tsx                 # Componente raiz
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📋 Tipos de Dados
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Device
+```typescript
+interface Device {
+  uuid: string;           // UUID único
+  name: string;           // Nome do dispositivo
+  location: string;       // Localização física
+  integrationId?: string; // ID de integração
+}
 ```
+
+### Event
+```typescript
+interface Event {
+  uuid: string;         // UUID único do evento
+  deviceUuid: string;   // UUID do dispositivo associado
+  temperature?: number; // Temperatura registrada
+  humidity?: number;    // Umidade registrada
+  timestamp: string;    // Timestamp ISO do evento
+  isAlarm: boolean;     // Indica se é um alarme crítico
+}
+```
+
+## 🔧 Configuração e Execução
+
+### Pré-requisitos
+- Node.js 18+ 
+- Yarn
+- API Backend rodando em `localhost:5038`
+
+### Instalação e Execução
+
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/danielreboucas/iot-event-handler-frontend.git
+   cd iot-event-handler-frontend
+   ```
+
+2. **Instale as dependências**:
+   ```bash
+   yarn
+   ```
+
+3. **Execute em desenvolvimento**:
+   ```bash
+   yarn dev
+   ```
+
+4. **Acesse a aplicação**:
+   - Abra [http://localhost:5173](http://localhost:5173) no navegador
+
+## 🌐 Integração com API
+
+### Endpoints Utilizados
+
+**Dispositivos:**
+- `GET /api/devices` - Lista todos os dispositivos
+- `GET /api/devices/{uuid}` - Busca dispositivo por UUID
+- `POST /api/devices` - Cria novo dispositivo
+- `PUT /api/devices/{uuid}` - Atualiza dispositivo
+- `DELETE /api/devices/{integrationId}` - Remove dispositivo
+
+**Eventos:**
+- `GET /api/events` - Lista todos os eventos
+
+## ✨ Funcionalidades Especiais
+
+### 🚨 Sistema de Alarmes
+- **Identificação visual**: Eventos com `isAlarm: true` destacados em vermelho
+- **Contador de alarmes**: Badge com número de alarmes ativos
+- **Filtro dedicado**: Visualização exclusiva de alarmes
+- **Notificação banner**: Alerta persistente quando há alarmes
+
+### 🎯 Experiência do Usuário
+- **Loading states**: Indicadores visuais durante carregamento
+- **Feedback visual**: Estados hover e focus bem definidos
+- **Confirmações**: Diálogos customizados em português
+- **Responsividade**: Layout adaptável para diferentes telas
+
+### 🔄 Atualizações em Tempo Real
+- **Polling automático**: Eventos atualizados a cada 30 segundos
+- **Estado sincronizado**: Interface sempre atualizada com backend
+- **Performance otimizada**: Requests eficientes sem redundâncias
+
+## 📦 Scripts Disponíveis
+
+```bash
+# Desenvolvimento
+yarn dev
+
+# Build de produção
+yarn build
+
+# Preview do build
+yarn preview
+
+# Linting
+yarn lint
+```
+
+## 🚀 Deploy
+
+1. **Build de produção**:
+   ```bash
+   yarn build
+   ```
+
+2. **Arquivos gerados**: `dist/`
+
+3. **Servir estáticos**: Qualquer servidor web pode hospedar os arquivos da pasta `dist/`
